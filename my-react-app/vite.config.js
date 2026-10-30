@@ -1,7 +1,19 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig } from "vite";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-})
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (
+            /recharts|d3-|victory|decimal|internmap|robust-predicates/.test(id)
+          )
+            return "charts";
+          if (/react|scheduler/.test(id) && !id.includes("lucide-react"))
+            return "react-vendor";
+        },
+      },
+    },
+  },
+});
